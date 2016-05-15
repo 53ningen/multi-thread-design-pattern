@@ -1,0 +1,10 @@
+.*
+**/target/
+*.exe
+target/
+*.iml
+**/build/
+/bin
+!.travis.yml
+!.gitignore
+.DS_Store
