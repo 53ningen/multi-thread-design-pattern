@@ -125,3 +125,36 @@ class TestClass {
    
    }
 ```
+
+スレッドの排他制御をする仕組みを **モニタ** と呼びます。
+また、ロックをとっていることをモニタを所有する、あるいはロックをホールドすると呼ぶこともあります。
+
+### スレッドの協調
+
+各インスタンスはウェイトセットという仮想的な概念を持っています。
+あるインスタンスがあるスレッドに `wait` メソッドを呼び出されたとき、インスタンスのウェイトセットにそのスレッドが追加されます。
+スレッドは `notify`, `notifyAll`, `interrupt` の呼び出しが発生するか `wait` のタイムアウトが発生するまで停止します。
+synchronized 文やブロックの外側で オブジェクトの wait を呼び出すと `IllegalMonitorStateException` が発生がスローされます。
+
+```java
+    private final Object obj = new Object();
+
+    private void testMethod() throws Exception {
+        final Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+            synchronized (obj) {
+                obj.notify(); // obj のウェイトセットに入ってるスレッドを1つだけ起こす
+            }
+        });
+        thread.start();
+        synchronized (obj) {
+            obj.wait(); // main thread が obj の ウェイトセットに入る
+        }
+    }
+```
+
+スレッドには処理をキャンセルする機能があったり、優先度を設定できたり、スレッドの終了待ちをできたりもする。
