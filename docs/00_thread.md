@@ -80,3 +80,48 @@ class RunnableImpl implements Runnable {
     }
 ```
 
+### Thread の排他制御
+
+1. `synchronized` メソッドを使う
+2. `synchronized` ブロックを使う
+
+あるスレッドから synchronized インスタンスメソッドが呼ばれている間は、
+他のスレッドは同じインスタンスの synchronized メソッドを呼び出すことができない。
+非 synchronized インスタンスメソッドについては問題なく呼び出すことができる。
+ロックはインスタンスごとにされる点に注意。
+
+次の synchronized メソッド と synchronized ブロックを使ったメソッドは等価になります。
+
+```java
+class TestClass {
+
+    synchronized void methodWithSynchronized() {
+        // do something
+    }
+
+    void methodWithSynchronizedBlock() {
+        synchronized (this) {
+            // do something
+        }
+    }
+
+}
+```
+
+また、次の synchronized クラスメソッドと synchronized ブロックを使ったクラスメソッドは等価になります。
+
+```java
+class TestClass {
+   
+       static synchronized void staticMethodWithSynchronized() {
+           // do something
+       }
+   
+        static void staticMethodWithSynchronizedBlock() {
+            synchronized (TestClass.class) {
+                //do something
+            }
+        }
+   
+   }
+```
